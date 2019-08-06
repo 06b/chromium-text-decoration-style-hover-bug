@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>text-decoration-style / text-underline-position hover bug</title>
+    <style>
+
+    body{background: #fff;}
+
+    a{padding: 0.75em;margin:0.25em;}
+
+    .control{}
+    .issue, .workaround{text-underline-position: under;}
+
+    .control:hover,.issue:hover,.workaround:hover{
+        /* Originally, I had `text-decoration-style: dashed;` on a high DPI screen when
+         I noticed this issue. When attepting to recreate this issue on a non-high DPI
+         screen, I was unable to reproduce the issue until I changed it to a different value.  */
+
+        /* Setting `text-decoration-style: double;` appears to cause the delay issue on the control
+        and the issue test - which is concerning, because I originally thought this was an issue with
+        using  `text-underline-position: under;` but it appears certain text-decoration-styles can have
+        negative side effects. */
+        /* text-decoration-style: double; */
+
+        /* Setting `text-decoration-style: wavy;` doesn't appear to cause the delay issue on the control,
+         but does appear to leave part of the wavy line rendered afterwards on the control; which is not
+         ideal, however that is not the bug this test case is for. */
+        text-decoration-style: wavy;
+    }
+
+    .workaround:hover{outline: 1px solid #fff; /* Set the outline color to match the background */}
+
+
+    /* ---------------------------------------------------------- */
+    /*                                                            */
+    /* A media query that captures:                               */
+    /*                                                            */
+    /* - Retina iOS devices                                       */
+    /* - Retina Macs running Safari                               */
+    /* - High DPI Windows PCs running IE 8 and above              */
+    /* - Low DPI Windows PCs running IE, zoomed in                */
+    /* - Low DPI Windows PCs and Macs running Firefox, zoomed in  */
+    /* - Android hdpi devices and above                           */
+    /* - Android tvdpi devices, including Google Nexus 7          */
+    /* - Chrome running on high DPI Macs and PCs                  */
+    /* - Opera running on high DPI Macs, PCs and mobile devices   */
+    /*                                                            */
+    /* A test for CSS pixel densites can be found here:           */
+    /* http://bjango.com/articles/min-device-pixel-ratio/         */
+    /*                                                            */
+    /*                                  @marcedwards from @bjango */
+    /*                                                            */
+    /* ---------------------------------------------------------- */
+
+    @media	only screen and (-webkit-min-device-pixel-ratio: 1.3),
+    only screen and (-o-min-device-pixel-ratio: 13/10),
+    only screen and (min-resolution: 120dpi)
+    {
+        /*  Originally, I had `text-decoration-style: dashed;` on a high DPI screen when
+         I noticed this issue, however on a non-high DPI it does not appear to be an issue.
+
+         For this reason, I'm keeping the `text-decoration-style: dashed;` styles for high
+         DPI screens because this is a case where a `text-decoration-style` may appear to work
+         as designed / intended on a non-high dpi screen but then clearly causes an issue on
+         a high dpi screen.
+         */
+        .control:hover,.issue:hover,.workaround:hover{text-decoration-style: dashed;}
+
+        /* Setting `text-decoration-style: double;` on a high DPI screen only appears to be an
+        issue for the issue test but doesn't appear to be an issue with the control test on
+        unlike on non-high DPI screens. */
+        /* .control:hover,.issue:hover,.workaround:hover{text-decoration-style: double;} */
+    }
+
+    </style>
+</head>
+<body>
+    <a href="/" class="control">Control - Hover over me</a>
+    <a href="/" class="issue">Issue - Hover over me</a>
+    <a href="/" class="workaround">Workaround - Hover over me</a>
+</body>
+</html>
